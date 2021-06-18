@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if request.user.is_authenticated and not request.user.is_superuser %}
+     <div class="alert alert-warning" role="alert">
+                <div class="d-flex">
+                    <div class="p-2">Приветствую, {{ request.user }}!</div>
+                    <div class="ml-auto p-2">
+                        <form method="get" action="{% url 'logout' %}">
+                            <button type="submit" class="btn btn-outline-danger" value="Logout"> Выйти из
+                                аккаунта
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+      {% elif request.user.is_superuser %}
+           <div class="alert alert-warning" role="alert">
+                <div class="d-flex">
+                    <div class="p-2">Аккаунт администратора - {{ request.user }}!</div>
+                    <div class="ml-auto p-2">
+                         <form method="get" action="{% url 'logout' %}">
+                            <button type="submit" class="btn btn-outline-danger" value="Logout"> Выйти из
+                                аккаунта
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+        <a href="{% url 'login' %}">Login</a>
+        <br>
+        <a href="{% url 'register' %}">Registration</a>
+        <br>
+        <br>
+
+{% endif %}
+    <br>
+        <br>
+    <a href="{% url 'main' %}">На главную</a>
+     {% for post in object_list %}
+
+                    <div style="color: whitesmoke">
+                        <div class="d-flex">
+                            <div class="p-2">
+                                <img src="/media/{{ post.picture }}" width="250" height="170">
+                            </div>
+                            <div class="p-2">
+                                <h2 style="color: #e4b101">{{ post.title }}</h2>
+                                <p> {{ post.content}}</p>
+
+                                <p>Автор поста: {{ post.author}}</p>
+                            <br>
+                                <h4 style="color: #e4b101">Комментарии:</h4>
+                            <p>{% for comment in comments %}</p>
+                                <h6 style="color: #e4b101">Автор комментария: {{ comment.author }}</h6>
+                                 <p> {{ comment.comment }}</p>
+                                {% endfor %}
+
+
+                                <p>   {% if request.user.is_authenticated  %}
+  <form  method="post" action="{% url 'create_comment' %}">
+    {% csrf_token %}
+
+    {{ comment_form }}
+    <input type="hidden" name="post_id" value="{{ post.id }}">
+      <input type="hidden" name="author_id" value="{{ request.user.id}}">
+    <button type="submit" class="btn btn-success" value="Purchase"> Оставить коментарий </button>
+       <br>
+      {% endif %}
+
+</form></p>
+
+                            </div>
+                        </div>
+                    </div>
+                                {% endfor %}
+
+{% endblock %}
