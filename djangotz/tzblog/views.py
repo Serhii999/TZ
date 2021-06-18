@@ -8,7 +8,7 @@ from .forms import *
 class UserCreateView(CreateView):
     model = TzUser
     form_class = TzUserForm
-    success_url = '/login'
+    success_url = '/accounts/login'
     template_name = 'register.html'
 
     def form_valid(self, form):
@@ -24,7 +24,7 @@ class Login(LoginView):
 
 class Logout(LoginRequiredMixin, LogoutView):
     next_page = '/'
-    login_url = 'login/'
+    login_url = '/accounts/login/'
 
 
 class PostsListView(ListView):
